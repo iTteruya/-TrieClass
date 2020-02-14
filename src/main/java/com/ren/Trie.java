@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 public class Trie {
 
-    class TrieNode {
+    static class TrieNode {
         Map<Character, TrieNode> branch = new TreeMap();
         boolean endNode;
 
