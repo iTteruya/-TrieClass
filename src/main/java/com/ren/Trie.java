@@ -10,7 +10,7 @@ public class Trie {
         Map<Character, TrieNode> branch = new TreeMap();
         boolean endNode;
 
-        public ArrayList<Character> getChildren() {
+        public ArrayList<Character> getChildren() { //попробовать через сет
             ArrayList<Character> list = new ArrayList();
             for (Character key: this.branch.keySet()) {
                 list.add(key);
@@ -56,7 +56,7 @@ public class Trie {
         return true;
     }
 
-    public void delete(String word) {
+    public void delete(String word) { //переделать
         if (this.containsWord(word)) {
             TrieNode current = root;
             ArrayList<Character> w = new ArrayList();
