@@ -5,21 +5,24 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
+
 class TrieTest {
 
     @Test
     public void containsWord() {
         Trie trie = new Trie();
         trie.put("Help");
+        trie.put("Helping");
         trie.put("Phantasm");
         trie.put("Hello");
 
         Assert.assertTrue(trie.containsWord("Help"));
+        Assert.assertTrue(trie.containsWord("Helping"));
         Assert.assertTrue(trie.containsWord("Phantasm"));
         Assert.assertTrue(trie.containsWord("Hello"));
 
         Assert.assertFalse(trie.containsWord("Hell"));
-        Assert.assertFalse(trie.containsWord("Helping"));
+        Assert.assertFalse(trie.containsWord("Helper"));
         Assert.assertFalse(trie.containsWord("Mystery"));
     }
 
@@ -62,6 +65,7 @@ class TrieTest {
         trie.put("Say");
         trie.put("Saved");
         trie.put("Archer");
+
 
         ArrayList<String> answer = new ArrayList();
 

@@ -1,21 +1,19 @@
 package com.ren;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.Map;
+
 
 public class Trie {
 
     static class TrieNode {
-        Map<Character, TrieNode> branch = new TreeMap();
-        boolean endNode;
+        Map<Character, TrieNode> branch = new TreeMap<Character, TrieNode>();
+        boolean isAWord;
 
-        public ArrayList<Character> getChildren() { //попробовать через сет
-            ArrayList<Character> list = new ArrayList();
-            for (Character key: this.branch.keySet()) {
-                list.add(key);
-            }
-            return list;
+        public Set<Character> getChildren() {
+            return this.branch.keySet();
         }
     }
 
@@ -33,7 +31,7 @@ public class Trie {
             }
             currentNode = currentNode.branch.get(character);
         }
-        currentNode.endNode = true;
+        currentNode.isAWord = true;
     }
 
     public boolean find(String word) {
@@ -43,23 +41,13 @@ public class Trie {
                 return false;
             } else currentNode = currentNode.branch.get(character);
         }
-        return currentNode.endNode;
-    }
-
-    public boolean containsPrefix(String word) {
-        TrieNode currentNode = root;
-        for (char character : word.toLowerCase().toCharArray()) {
-            if (!currentNode.branch.containsKey(character)) {
-                return false;
-            } else currentNode = currentNode.branch.get(character);
-        }
-        return true;
+        return currentNode.isAWord;
     }
 
     public void delete(String word) { //переделать
         if (this.containsWord(word)) {
             TrieNode current = root;
-            ArrayList<Character> w = new ArrayList();
+            ArrayList<Character> w = new ArrayList<Character>();
             for (char ch : word.toLowerCase().toCharArray()) {
                 w.add(ch);
                 if (this.getByPrefix(getStringRepresentation(w)).size() <= 1) {
@@ -71,45 +59,47 @@ public class Trie {
         }
     }
 
-    public ArrayList<String> getByPrefix(String prefix) {
-        ArrayList<String> words = new ArrayList();
-        if (this.containsPrefix(prefix)) {
-            ArrayList<ArrayList<Character>> list = new ArrayList();
+    public ArrayList<String> getByPrefix(String prefix) { //переделать
+        ArrayList<String> words = new ArrayList<String>();
+            ArrayList<ArrayList<Character>> list = new ArrayList<ArrayList<Character>>();
             TrieNode currentNode = root;
             for (char character : prefix.toLowerCase().toCharArray()) {
                 currentNode = currentNode.branch.get(character);
             }
+            ArrayList<Character> word = new ArrayList<Character>();
+            for (char character: prefix.toCharArray()) {
+                word.add(character);
+            }
             for (char c: currentNode.getChildren()) {
                 TrieNode newNode = currentNode.branch.get(c);
-                ArrayList<Character> word = new ArrayList();
-                for (char character: prefix.toCharArray()) {
-                    word.add(character);
-                }
-                word.add(c);
-                String newPrefix = getStringRepresentation(word);
-                if (!newNode.endNode) {
+                ArrayList<Character> newWord = new ArrayList<Character>(word);
+                newWord.add(c);
+                String newPrefix = getStringRepresentation(newWord);
+                if (!newNode.getChildren().isEmpty()) {
                     wordForm(newNode, newPrefix, list);
-                } else list.add(word);
+                } else list.add(newWord);
             }
             for (ArrayList<Character> array: list) {
                 words.add(getStringRepresentation(array));
             }
-        }
         return words;
     }
 
     public void wordForm(TrieNode current, String word, ArrayList<ArrayList<Character>> list) {
-        ArrayList<Character> children = current.getChildren();
-        for (char c: children) {
+        Set<Character> children = current.getChildren();
+        for (Object c : children) {
             String newWord = word;
-            ArrayList<Character> w = new ArrayList();
-            for (char character: newWord.toCharArray()) {
+            ArrayList<Character> w = new ArrayList<Character>();
+            for (char character : newWord.toCharArray()) {
                 w.add(character);
             }
-            w.add(c);
+            w.add((Character) c);
             newWord = getStringRepresentation(w);
             TrieNode newNode = current.branch.get(c);
-            if (!newNode.endNode) {
+            if (newNode.isAWord && !newNode.getChildren().isEmpty()) {
+                list.add(w);
+                wordForm(newNode, newWord, list);
+            } else if (!newNode.getChildren().isEmpty()) {
                 wordForm(newNode, newWord, list);
             } else list.add(w);
         }
