@@ -2,10 +2,7 @@ package com.ren;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-
-
 
 class TrieTest {
 
@@ -72,7 +69,6 @@ class TrieTest {
         trie.put("Saying");
         trie.put("Saved");
         trie.put("Archer");
-
 
         ArrayList<String> answer = new ArrayList<String>();
 
