@@ -68,7 +68,6 @@ class TrieTest {
         trie.put("Say");
         trie.put("Saying");
         trie.put("Saved");
-        trie.put("Archer");
 
         ArrayList<String> answer = new ArrayList<String>();
 
@@ -80,6 +79,6 @@ class TrieTest {
         answer.add("saying");
 
         Assert.assertEquals(answer, trie.getByPrefix("sa"));
-        Assert.assertNotEquals(answer, trie.getByPrefix("ar"));
+        Assert.assertNotEquals(answer, trie.getByPrefix("sav"));
     }
 }
