@@ -2,7 +2,6 @@ package com.ren;
 
 import java.util.*;
 
-
 public class Trie {
 
     static class TrieNode {
