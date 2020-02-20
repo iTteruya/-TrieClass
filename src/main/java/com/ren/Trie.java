@@ -1,9 +1,6 @@
 package com.ren;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class Trie {
@@ -44,22 +41,39 @@ public class Trie {
         return currentNode.isAWord;
     }
 
-    public void delete(String word) { //переделать
-        if (this.containsWord(word)) {
-            TrieNode current = root;
-            ArrayList<Character> w = new ArrayList<Character>();
-            for (char ch : word.toLowerCase().toCharArray()) {
-                w.add(ch);
-                if (this.getByPrefix(getStringRepresentation(w)).size() <= 1) {
-                    current.branch.remove(ch);
-                    break;
-                }
-                current = current.branch.get(ch);
-            }
+    public void delete(String word) {
+        ArrayList<Character> letters = new ArrayList<Character>();
+        for (char ch: word.toLowerCase().toCharArray()) {
+            letters.add(ch);
         }
+        delete(letters, root);
     }
 
-    public ArrayList<String> getByPrefix(String prefix) { //переделать
+    private boolean delete(ArrayList<Character> list, TrieNode currentNode) {
+        TrieNode newNode = currentNode;
+        if (list.isEmpty()) {
+            if (!newNode.isAWord) {
+                return false;
+            }
+            newNode.isAWord = false;
+            return newNode.getChildren().isEmpty();
+        }
+        if (newNode.branch.get(list.get(0)) == null) {
+            return false;
+        } else newNode = currentNode.branch.get(list.get(0));
+        char character = list.get(0);
+        list.remove(0);
+
+        boolean wordCanBeDeleted = delete(list, newNode) && !currentNode.isAWord;
+
+        if (wordCanBeDeleted) {
+            currentNode.branch.remove(character);
+            return currentNode.branch.keySet().isEmpty();
+        }
+        return false;
+    }
+
+    public ArrayList<String> getByPrefix(String prefix) {
         ArrayList<String> words = new ArrayList<String>();
             ArrayList<ArrayList<Character>> list = new ArrayList<ArrayList<Character>>();
             TrieNode currentNode = root;
@@ -74,9 +88,11 @@ public class Trie {
                 TrieNode newNode = currentNode.branch.get(c);
                 ArrayList<Character> newWord = new ArrayList<Character>(word);
                 newWord.add(c);
-                String newPrefix = getStringRepresentation(newWord);
-                if (!newNode.getChildren().isEmpty()) {
-                    wordForm(newNode, newPrefix, list);
+                if (newNode.isAWord && !newNode.getChildren().isEmpty()) {
+                    list.add(newWord);
+                    wordForm(newNode, newWord, list);
+                } else if (!newNode.getChildren().isEmpty()) {
+                    wordForm(newNode, newWord, list);
                 } else list.add(newWord);
             }
             for (ArrayList<Character> array: list) {
@@ -85,23 +101,18 @@ public class Trie {
         return words;
     }
 
-    public void wordForm(TrieNode current, String word, ArrayList<ArrayList<Character>> list) {
+    public void wordForm(TrieNode current, ArrayList<Character> word, ArrayList<ArrayList<Character>> list) {
         Set<Character> children = current.getChildren();
         for (Object c : children) {
-            String newWord = word;
-            ArrayList<Character> w = new ArrayList<Character>();
-            for (char character : newWord.toCharArray()) {
-                w.add(character);
-            }
-            w.add((Character) c);
-            newWord = getStringRepresentation(w);
+            ArrayList<Character> newWord = new ArrayList<Character>(word);
+            newWord.add((Character) c);
             TrieNode newNode = current.branch.get(c);
             if (newNode.isAWord && !newNode.getChildren().isEmpty()) {
-                list.add(w);
+                list.add(newWord);
                 wordForm(newNode, newWord, list);
             } else if (!newNode.getChildren().isEmpty()) {
                 wordForm(newNode, newWord, list);
-            } else list.add(w);
+            } else list.add(newWord);
         }
     }
 
