@@ -51,7 +51,7 @@ public class Trie {
     private boolean delete(ArrayList<Character> list, TrieNode currentNode) {
         TrieNode newNode = currentNode;
         if (list.isEmpty()) {
-            if (!newNode.isAWord) {
+            if (!newNode.isAWord ) {
                 return false;
             }
             newNode.isAWord = false;
