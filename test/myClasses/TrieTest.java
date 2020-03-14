@@ -1,4 +1,4 @@
-package com.ren;
+package myClasses;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
